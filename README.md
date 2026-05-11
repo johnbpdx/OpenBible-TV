@@ -33,7 +33,7 @@ Built with love for small groups, families, and personal devotion. Designed to b
 ### Setup
 
 ```bash
-git clone https://github.com/johnbpd x/OpenBible-TV.git
+git clone https://github.com/johnbpdx/OpenBible-TV.git
 cd OpenBible-TV
 
 # Install tools (optional but recommended)
