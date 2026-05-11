@@ -1,0 +1,11 @@
+{
+    "rootDir": ".",
+    "files": [
+        "source/**/*.bs",
+        "components/**/*.bs",
+        "components/**/*.xml"
+    ],
+    "autoImportComponentScript": true,
+    "createPackage": false,
+    "plugins": []
+}

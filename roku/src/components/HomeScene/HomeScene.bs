@@ -1,0 +1,3 @@
+sub init()
+    print "HomeScene initialized"
+end sub
