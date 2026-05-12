@@ -6,7 +6,7 @@ title: Terms of Use — OpenBible TV
 
 **Effective Date:** May 12, 2026  
 **App:** OpenBible TV (Roku Channel)  
-**Developer:** John Burt
+**Developer:** John Burton
 
 ---
 
