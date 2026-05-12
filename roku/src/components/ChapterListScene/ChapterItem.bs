@@ -1,0 +1,20 @@
+sub init()
+    m.background = m.top.findNode("itemBackground")
+    m.label = m.top.findNode("chapterLabel")
+end sub
+
+sub onContentChange()
+    content = m.top.itemContent
+    if content = invalid then return
+    m.label.text = content.title
+end sub
+
+sub onFocusChange()
+    if m.top.focusPercent > 0.5
+        m.background.color = "#3b82f6"
+        m.label.color = "#ffffff"
+    else
+        m.background.color = "#1e293b"
+        m.label.color = "#e2e8f0"
+    end if
+end sub

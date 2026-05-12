@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="BookListScene" extends="Group">
+<component name="ChapterListScene" extends="Group">
 
     <interface>
-        <field id="selectedBook" type="string" alwaysNotify="true" />
-        <field id="selectedBookAbbrev" type="string" />
+        <field id="selectedChapter" type="integer" alwaysNotify="true" />
         <field id="closeScene" type="boolean" alwaysNotify="true" />
+        <field id="bookName" type="string" />
+        <field id="bookAbbrev" type="string" onChange="onBookSet" />
     </interface>
 
     <children>
@@ -24,8 +25,8 @@
             color="#1e2937" />
 
         <Label
-            id="title"
-            text="Select a Book"
+            id="bookTitle"
+            text=""
             font="font:LargeBoldSystemFont"
             horizAlign="center"
             vertAlign="center"
@@ -33,27 +34,26 @@
             height="110"
             color="#e2e8f0" />
 
-        <!-- Updates dynamically to show OT or NT as user scrolls -->
         <Label
-            id="testamentLabel"
-            text="OLD TESTAMENT"
+            id="subtitle"
+            text="Select a Chapter"
             font="font:SmallBoldSystemFont"
             horizAlign="left"
             vertAlign="center"
             translation="[120, 120]"
-            width="400"
+            width="500"
             height="40"
             color="#94a3b8" />
 
-        <!-- Single scrollable grid: all 66 books (11 rows total, 8 visible) -->
+        <!-- Grid of chapter numbers: 10 columns, 8 visible rows -->
         <MarkupGrid
-            id="bookGrid"
-            translation="[120, 170]"
-            itemComponentName="BookItem"
-            numColumns="6"
+            id="chapterGrid"
+            translation="[80, 175]"
+            itemComponentName="ChapterItem"
+            numColumns="10"
             numRows="8"
-            itemSize="[270, 80]"
-            itemSpacing="[20, 15]"
+            itemSize="[160, 80]"
+            itemSpacing="[10, 10]"
             focusable="true"
             drawFocusFeedback="false" />
 

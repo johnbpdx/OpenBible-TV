@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="ChapterItem" extends="Group">
+
+    <interface>
+        <field id="itemContent" type="node" onChange="onContentChange" />
+        <field id="focusPercent" type="float" onChange="onFocusChange" />
+    </interface>
+
+    <children>
+
+        <Rectangle
+            id="itemBackground"
+            width="160"
+            height="80"
+            color="#1e293b" />
+
+        <Label
+            id="chapterLabel"
+            width="160"
+            height="80"
+            horizAlign="center"
+            vertAlign="center"
+            font="font:MediumBoldSystemFont"
+            color="#e2e8f0" />
+
+    </children>
+
+</component>

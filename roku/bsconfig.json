@@ -6,7 +6,8 @@
     "source/**/*",
     "components/**/*",
     "images/**/*",
-    "locale/**/*"
+    "locale/**/*",
+    "data/**/*"
   ],
   "autoImportComponentScript": true,
   "createPackage": true

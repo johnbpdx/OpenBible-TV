@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="VerseItem" extends="Group">
+
+    <interface>
+        <field id="itemContent" type="node" onChange="onContentChange" />
+        <field id="focusPercent" type="float" onChange="onFocusChange" />
+    </interface>
+
+    <children>
+
+        <Rectangle
+            id="itemBackground"
+            width="1700"
+            height="100"
+            color="#0f172a" />
+
+        <!-- Verse number -->
+        <Label
+            id="verseNum"
+            translation="[0, 8]"
+            width="70"
+            height="84"
+            horizAlign="right"
+            vertAlign="top"
+            font="font:SmallBoldSystemFont"
+            color="#3b82f6" />
+
+        <!-- Verse text -->
+        <Label
+            id="verseText"
+            translation="[90, 8]"
+            width="1600"
+            height="84"
+            horizAlign="left"
+            vertAlign="top"
+            font="font:SmallSystemFont"
+            color="#e2e8f0"
+            wrap="true" />
+
+    </children>
+
+</component>

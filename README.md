@@ -15,14 +15,16 @@ Built with love for small groups, families, and personal devotion. Designed to b
 
 ## ✨ Features
 
-- 📖 **Multiple public-domain Bible translations** (KJV, WEB, ASV, and more)
-- 📝 **Matthew Henry Commentary** (full public-domain text) with easy toggling
-- 🤖 **AI-powered discussion questions** — 4–5 thoughtful group questions generated on demand
-- 🎮 **Interactive Trivia Game** with multiple choice questions
-- 👨‍👩‍👧 **Kids Mode** — simplified language, activities, and fun visuals
-- 🔄 Offline support (bundled Bible data)
-- 📱 Clean, remote-friendly interface built for living-room use
-- 🌍 Extensible — easy to add more translations, commentaries, or languages
+- 📖 **World English Bible (WEB)** — all 66 books bundled as offline JSON (public domain / CC0)
+- 📚 **Full navigation** — Book list → Chapter grid → Verse reader
+- ◄ ► **Chapter navigation** — Left/Right arrow keys jump to previous/next chapter without leaving the reader
+- 🔍 **Study Panel** — press OK on any verse to open a dedicated study overlay with the verse text and commentary section
+- 📝 **Matthew Henry Commentary** — framework in place, full data coming in a future update
+- 🤖 **AI-powered discussion questions** — planned for future update
+- 🎮 **Interactive Trivia Game** — planned for future update
+- 👨‍👩‍👧 **Kids Mode** — planned for future update
+- 🔄 Fully offline — all Bible text bundled in the package, no internet required
+- 📱 Clean, remote-friendly interface designed for living-room use
 
 ---
 
@@ -69,6 +71,17 @@ cd roku
 
 This builds the BrighterScript source and sideloads the `.zip` directly to your Roku in one step.
 
+### Download Bible Data
+
+The 66 WEB Bible JSON files are committed to the repo under `roku/src/data/books/`. If you ever need to regenerate them:
+
+```powershell
+cd data
+.\download-web-bible.ps1
+```
+
+This fetches all 66 books from [TehShrike/world-english-bible](https://github.com/TehShrike/world-english-bible) and writes them to `roku/src/data/books/{abbrev}.json`.
+
 ### VS Code F5 Deploy
 
 Open the workspace, ensure the BrightScript Language extension is installed, and press **F5**. The `launch.json` (gitignored) handles the rest.
@@ -81,18 +94,42 @@ Open the workspace, ensure the BrightScript Language extension is installed, and
 OpenBible-TV/
 ├── roku/
 │   ├── src/
-│   │   ├── manifest                  # Roku app manifest
+│   │   ├── manifest                      # Roku app manifest
 │   │   ├── source/
-│   │   │   └── main.bs               # App entry point
-│   │   └── components/
-│   │       ├── HomeScene/            # Title/splash screen
-│   │       └── BookListScene/        # Scrollable grid of all 66 books
-│   ├── bsconfig.json                 # BrighterScript build config
-│   └── deploy.ps1                    # One-step build + deploy script
-├── backend/                          # Future: AI discussion questions API
-├── data/                             # Future: Bible JSON data
-├── docs/                             # Additional documentation
-├── .env.example                      # Credential template (copy to .env)
+│   │   │   └── main.bs                   # App entry point
+│   │   ├── components/
+│   │   │   ├── HomeScene/                # Title/splash screen (extends Scene)
+│   │   │   │   ├── HomeScene.xml
+│   │   │   │   └── HomeScene.bs
+│   │   │   ├── BookListScene/            # 66-book scrollable grid (extends Group)
+│   │   │   │   ├── BookListScene.xml
+│   │   │   │   ├── BookListScene.bs
+│   │   │   │   ├── BookItem.xml          # Custom grid cell — book name + OT/NT color
+│   │   │   │   └── BookItem.bs
+│   │   │   ├── ChapterListScene/         # Chapter number grid (extends Group)
+│   │   │   │   ├── ChapterListScene.xml
+│   │   │   │   ├── ChapterListScene.bs
+│   │   │   │   ├── ChapterItem.xml       # Custom grid cell — chapter number
+│   │   │   │   └── ChapterItem.bs
+│   │   │   └── VerseView/               # Chapter reading screen (extends Group)
+│   │   │       ├── VerseView.xml
+│   │   │       ├── VerseView.bs
+│   │   │       ├── VerseItem.xml         # Scrollable verse row — number + wrapped text
+│   │   │       ├── VerseItem.bs
+│   │   │       ├── StudyPanel.xml        # Verse study overlay with commentary
+│   │   │       └── StudyPanel.bs
+│   │   └── data/
+│   │       └── books/                    # 66 WEB Bible JSON files (bundled in package)
+│   │           ├── gn.json               # Genesis
+│   │           ├── ex.json               # Exodus
+│   │           └── ...                   # All 66 books
+│   ├── bsconfig.json                     # BrighterScript build config
+│   └── deploy.ps1                        # One-step build + deploy script
+├── data/
+│   └── download-web-bible.ps1            # Script to regenerate Bible JSON from source
+├── backend/                              # Future: AI discussion questions API
+├── docs/                                 # GitHub Pages site (privacy, terms, learn more)
+├── .env.example                          # Credential template (copy to .env)
 └── README.md
 ```
 
@@ -116,15 +153,20 @@ If someone has shared a beta channel code with you, here's how to install it:
 | Status | Feature |
 |--------|---------|
 | ✅ | App loads and displays on Roku |
-| ✅ | Scrollable book list — all 66 books (OT + NT) |
+| ✅ | Scrollable 6-column book list — all 66 books (OT + NT color coded) |
 | ✅ | One-step build & deploy script |
-| 🔄 | Chapter/verse picker |
-| 🔄 | Bible text display (KJV — bundled JSON) |
-| 🔲 | Matthew Henry Commentary toggle |
+| ✅ | All 66 WEB Bible books bundled as offline JSON |
+| ✅ | Chapter grid — 10-column number picker per book |
+| ✅ | Verse reader — scrollable chapter view with wrapped verse text |
+| ✅ | Left/Right remote navigation between chapters |
+| ✅ | Study Panel overlay — verse + commentary section on OK press |
+| ✅ | Hint bar — on-screen remote button guide |
+| 🔲 | Matthew Henry Commentary data bundled |
 | 🔲 | AI-generated discussion questions |
 | 🔲 | Trivia game mode |
 | 🔲 | Kids mode |
 | 🔲 | Multiple translations |
+| 🔲 | Roku Channel Store submission |
 
 ---
 

@@ -1,0 +1,20 @@
+sub init()
+    m.background = m.top.findNode("itemBackground")
+    m.verseNum = m.top.findNode("verseNum")
+    m.verseText = m.top.findNode("verseText")
+end sub
+
+sub onContentChange()
+    content = m.top.itemContent
+    if content = invalid then return
+    m.verseNum.text = content.title
+    m.verseText.text = content.description
+end sub
+
+sub onFocusChange()
+    if m.top.focusPercent > 0.5
+        m.background.color = "#1e2d45"
+    else
+        m.background.color = "#0f172a"
+    end if
+end sub

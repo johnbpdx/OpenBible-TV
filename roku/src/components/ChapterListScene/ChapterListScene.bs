@@ -1,0 +1,59 @@
+' *****************************************************************************
+' * ChapterListScene.bs
+' * Chapter selection screen for a given Bible book
+' *****************************************************************************
+
+sub init()
+    print "ChapterListScene initialized"
+    m.bookTitleLabel = m.top.findNode("bookTitle")
+    m.chapterGrid = m.top.findNode("chapterGrid")
+end sub
+
+sub onBookSet()
+    abbrev = m.top.bookAbbrev
+    bookName = m.top.bookName
+    if abbrev = "" or abbrev = invalid then return
+
+    m.bookTitleLabel.text = bookName
+
+    ' Load the book JSON bundled in the package
+    filePath = "pkg:/data/books/" + abbrev + ".json"
+    jsonStr = ReadAsciiFile(filePath)
+    if jsonStr = ""
+        print "ChapterListScene: could not read " + filePath
+        return
+    end if
+
+    data = ParseJson(jsonStr)
+    if data = invalid
+        print "ChapterListScene: failed to parse JSON for " + abbrev
+        return
+    end if
+
+    chapterCount = data.chapters.Count()
+    print "ChapterListScene: " + bookName + " has " + stri(chapterCount).trim() + " chapters"
+
+    content = CreateObject("roSGNode", "ContentNode")
+    for i = 1 to chapterCount
+        node = content.createChild("ContentNode")
+        node.title = stri(i).trim()
+    end for
+
+    m.chapterGrid.content = content
+    m.chapterGrid.setFocus(true)
+end sub
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    if not press then return false
+
+    if key = "back"
+        m.top.closeScene = true
+        return true
+    else if key = "OK"
+        index = m.chapterGrid.itemFocused
+        m.top.selectedChapter = index + 1
+        return true
+    end if
+
+    return false
+end function

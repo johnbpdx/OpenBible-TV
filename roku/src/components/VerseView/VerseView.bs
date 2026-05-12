@@ -1,0 +1,120 @@
+' *****************************************************************************
+' * VerseView.bs
+' * Bible chapter reading screen — displays all verses for a given chapter
+' * Left/Right: prev/next chapter   OK: open study panel   Back: return
+' *****************************************************************************
+
+sub init()
+    print "VerseView initialized"
+    m.chapterTitle = m.top.findNode("chapterTitle")
+    m.verseList = m.top.findNode("verseList")
+    m.chapterCount = 0
+    m.studyPanel = invalid
+end sub
+
+sub onChapterSet()
+    abbrev = m.top.bookAbbrev
+    bookName = m.top.bookName
+    chapter = m.top.chapterNumber
+    if abbrev = "" or abbrev = invalid then return
+    if chapter <= 0 then return
+
+    m.chapterTitle.text = bookName + " — Chapter " + stri(chapter).trim()
+
+    filePath = "pkg:/data/books/" + abbrev + ".json"
+    jsonStr = ReadAsciiFile(filePath)
+    if jsonStr = ""
+        print "VerseView: could not read " + filePath
+        return
+    end if
+
+    data = ParseJson(jsonStr)
+    if data = invalid
+        print "VerseView: failed to parse JSON for " + abbrev
+        return
+    end if
+
+    m.chapterCount = data.chapters.Count()
+
+    ' Find the matching chapter object
+    targetChapter = invalid
+    for each ch in data.chapters
+        if ch.chapter = chapter
+            targetChapter = ch
+            exit for
+        end if
+    end for
+
+    if targetChapter = invalid
+        print "VerseView: chapter " + stri(chapter).trim() + " not found in " + abbrev
+        return
+    end if
+
+    content = CreateObject("roSGNode", "ContentNode")
+    for each v in targetChapter.verses
+        node = content.createChild("ContentNode")
+        node.title = stri(v.verse).trim()
+        node.description = v.text
+    end for
+
+    print "VerseView: loaded " + stri(content.getChildCount()).trim() + " verses"
+    m.verseList.content = content
+    m.verseList.jumpToItem = 0
+    m.verseList.setFocus(true)
+end sub
+
+sub goToChapter(delta as integer)
+    current = m.top.chapterNumber
+    newChapter = current + delta
+    if newChapter < 1 then newChapter = 1
+    if m.chapterCount > 0 and newChapter > m.chapterCount then newChapter = m.chapterCount
+    if newChapter = current then return
+    m.top.chapterNumber = newChapter
+end sub
+
+sub openStudyPanel()
+    if m.studyPanel <> invalid then return
+    index = m.verseList.itemFocused
+    if index < 0 then return
+    child = m.verseList.content.getChild(index)
+    if child = invalid then return
+
+    m.studyPanel = m.top.createChild("StudyPanel")
+    m.studyPanel.bookName = m.top.bookName
+    m.studyPanel.chapterNumber = m.top.chapterNumber
+    m.studyPanel.verseNumber = child.title
+    m.studyPanel.verseText = child.description
+    m.studyPanel.observeField("closePanel", "onStudyPanelClose")
+    m.studyPanel.setFocus(true)
+end sub
+
+sub onStudyPanelClose()
+    if m.studyPanel = invalid then return
+    m.top.removeChild(m.studyPanel)
+    m.studyPanel = invalid
+    m.verseList.setFocus(true)
+end sub
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    if not press then return false
+
+    if key = "back"
+        if m.studyPanel <> invalid
+            ' let StudyPanel handle its own back
+            return false
+        end if
+        m.top.closeScene = true
+        return true
+    else if key = "left"
+        goToChapter(-1)
+        return true
+    else if key = "right"
+        goToChapter(1)
+        return true
+    else if key = "OK"
+        openStudyPanel()
+        return true
+    end if
+
+    return false
+end function

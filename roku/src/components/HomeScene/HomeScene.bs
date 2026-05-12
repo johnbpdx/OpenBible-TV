@@ -1,6 +1,8 @@
 sub init()
     print "HomeScene initialized"
     m.bookListScene = invalid
+    m.chapterListScene = invalid
+    m.verseView = invalid
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
@@ -33,8 +35,60 @@ end sub
 sub onBookSelected()
     if m.bookListScene = invalid then return
     book = m.bookListScene.selectedBook
-    if book <> "" and book <> invalid
-        print "Navigating to chapters for: " + book
-        ' TODO: create and show ChapterListScene
+    abbrev = m.bookListScene.selectedBookAbbrev
+    if book = "" or book = invalid then return
+    if abbrev = "" or abbrev = invalid then return
+    showChapterList(book, abbrev)
+end sub
+
+sub showChapterList(bookName as string, bookAbbrev as string)
+    if m.chapterListScene <> invalid then return
+    m.chapterListScene = m.top.createChild("ChapterListScene")
+    m.chapterListScene.bookName = bookName
+    m.chapterListScene.bookAbbrev = bookAbbrev
+    m.chapterListScene.observeField("closeScene", "onChapterListClose")
+    m.chapterListScene.observeField("selectedChapter", "onChapterSelected")
+    m.chapterListScene.setFocus(true)
+end sub
+
+sub onChapterListClose()
+    if m.chapterListScene = invalid then return
+    m.top.removeChild(m.chapterListScene)
+    m.chapterListScene = invalid
+    if m.bookListScene <> invalid
+        m.bookListScene.setFocus(true)
+    else
+        m.top.setFocus(true)
+    end if
+end sub
+
+sub onChapterSelected()
+    if m.chapterListScene = invalid then return
+    chapter = m.chapterListScene.selectedChapter
+    book = m.chapterListScene.bookName
+    abbrev = m.chapterListScene.bookAbbrev
+    if chapter > 0
+        showVerseView(book, abbrev, chapter)
+    end if
+end sub
+
+sub showVerseView(bookName as string, bookAbbrev as string, chapter as integer)
+    if m.verseView <> invalid then return
+    m.verseView = m.top.createChild("VerseView")
+    m.verseView.bookName = bookName
+    m.verseView.bookAbbrev = bookAbbrev
+    m.verseView.chapterNumber = chapter
+    m.verseView.observeField("closeScene", "onVerseViewClose")
+    m.verseView.setFocus(true)
+end sub
+
+sub onVerseViewClose()
+    if m.verseView = invalid then return
+    m.top.removeChild(m.verseView)
+    m.verseView = invalid
+    if m.chapterListScene <> invalid
+        m.chapterListScene.setFocus(true)
+    else
+        m.top.setFocus(true)
     end if
 end sub
