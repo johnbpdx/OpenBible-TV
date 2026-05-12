@@ -98,7 +98,20 @@ OpenBible-TV/
 
 ---
 
-## 🗺️ Roadmap
+## � Installing the Beta App on Your Roku
+
+If someone has shared a beta channel code with you, here's how to install it:
+
+1. On a computer or phone, go to [my.roku.com](https://my.roku.com) and log in with your Roku account.
+2. Go to **Manage account** → **Add channel with a code** (may also appear as **Add beta channel**).
+3. Enter the code you were given and click **Add Channel**.
+   > You'll see a warning that the channel hasn't been certified — this is normal for beta/developer apps. Click through to confirm.
+4. On your Roku, go to **Settings → System → System update → Check now** (or wait up to 30 minutes for it to appear automatically).
+5. The app will appear on your Roku home screen.
+
+---
+
+## �🗺️ Roadmap
 
 | Status | Feature |
 |--------|---------|
