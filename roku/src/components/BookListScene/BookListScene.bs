@@ -1,0 +1,128 @@
+' *****************************************************************************
+' * BookListScene.bs
+' * Book selection screen - single scrollable grid of all 66 books
+' *****************************************************************************
+
+sub init()
+    print "BookListScene initialized"
+    m.bookGrid = m.top.findNode("bookGrid")
+    m.testamentLabel = m.top.findNode("testamentLabel")
+
+    populateBookGrid()
+
+    m.bookGrid.observeField("itemFocused", "onItemFocused")
+    m.bookGrid.setFocus(true)
+end sub
+
+sub populateBookGrid()
+    allBooks = [
+        {title: "Genesis", testament: "OT"},
+        {title: "Exodus", testament: "OT"},
+        {title: "Leviticus", testament: "OT"},
+        {title: "Numbers", testament: "OT"},
+        {title: "Deuteronomy", testament: "OT"},
+        {title: "Joshua", testament: "OT"},
+        {title: "Judges", testament: "OT"},
+        {title: "Ruth", testament: "OT"},
+        {title: "1 Samuel", testament: "OT"},
+        {title: "2 Samuel", testament: "OT"},
+        {title: "1 Kings", testament: "OT"},
+        {title: "2 Kings", testament: "OT"},
+        {title: "1 Chronicles", testament: "OT"},
+        {title: "2 Chronicles", testament: "OT"},
+        {title: "Ezra", testament: "OT"},
+        {title: "Nehemiah", testament: "OT"},
+        {title: "Esther", testament: "OT"},
+        {title: "Job", testament: "OT"},
+        {title: "Psalms", testament: "OT"},
+        {title: "Proverbs", testament: "OT"},
+        {title: "Ecclesiastes", testament: "OT"},
+        {title: "Song of Solomon", testament: "OT"},
+        {title: "Isaiah", testament: "OT"},
+        {title: "Jeremiah", testament: "OT"},
+        {title: "Lamentations", testament: "OT"},
+        {title: "Ezekiel", testament: "OT"},
+        {title: "Daniel", testament: "OT"},
+        {title: "Hosea", testament: "OT"},
+        {title: "Joel", testament: "OT"},
+        {title: "Amos", testament: "OT"},
+        {title: "Obadiah", testament: "OT"},
+        {title: "Jonah", testament: "OT"},
+        {title: "Micah", testament: "OT"},
+        {title: "Nahum", testament: "OT"},
+        {title: "Habakkuk", testament: "OT"},
+        {title: "Zephaniah", testament: "OT"},
+        {title: "Haggai", testament: "OT"},
+        {title: "Zechariah", testament: "OT"},
+        {title: "Malachi", testament: "OT"},
+        {title: "Matthew", testament: "NT"},
+        {title: "Mark", testament: "NT"},
+        {title: "Luke", testament: "NT"},
+        {title: "John", testament: "NT"},
+        {title: "Acts", testament: "NT"},
+        {title: "Romans", testament: "NT"},
+        {title: "1 Corinthians", testament: "NT"},
+        {title: "2 Corinthians", testament: "NT"},
+        {title: "Galatians", testament: "NT"},
+        {title: "Ephesians", testament: "NT"},
+        {title: "Philippians", testament: "NT"},
+        {title: "Colossians", testament: "NT"},
+        {title: "1 Thessalonians", testament: "NT"},
+        {title: "2 Thessalonians", testament: "NT"},
+        {title: "1 Timothy", testament: "NT"},
+        {title: "2 Timothy", testament: "NT"},
+        {title: "Titus", testament: "NT"},
+        {title: "Philemon", testament: "NT"},
+        {title: "Hebrews", testament: "NT"},
+        {title: "James", testament: "NT"},
+        {title: "1 Peter", testament: "NT"},
+        {title: "2 Peter", testament: "NT"},
+        {title: "1 John", testament: "NT"},
+        {title: "2 John", testament: "NT"},
+        {title: "3 John", testament: "NT"},
+        {title: "Jude", testament: "NT"},
+        {title: "Revelation", testament: "NT"}
+    ]
+
+    content = CreateObject("roSGNode", "ContentNode")
+    for each book in allBooks
+        node = content.createChild("ContentNode")
+        node.title = book.title
+        node.addField("testament", "string", false)
+        node.testament = book.testament
+    end for
+    m.bookGrid.content = content
+end sub
+
+sub onItemFocused()
+    index = m.bookGrid.itemFocused
+    child = m.bookGrid.content.getChild(index)
+    if child = invalid then return
+
+    if child.testament = "NT"
+        m.testamentLabel.text = "NEW TESTAMENT"
+        m.testamentLabel.color = "#60a5fa"
+    else
+        m.testamentLabel.text = "OLD TESTAMENT"
+        m.testamentLabel.color = "#94a3b8"
+    end if
+end sub
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    if not press then return false
+
+    if key = "back"
+        m.top.closeScene = true
+        return true
+    else if key = "OK"
+        index = m.bookGrid.itemFocused
+        child = m.bookGrid.content.getChild(index)
+        if child <> invalid
+            print "Selected book: " + child.title
+            m.top.selectedBook = child.title
+        end if
+        return true
+    end if
+
+    return false
+end function

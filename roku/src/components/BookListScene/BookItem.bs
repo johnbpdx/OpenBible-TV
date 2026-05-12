@@ -1,0 +1,33 @@
+sub init()
+    m.background = m.top.findNode("itemBackground")
+    m.label = m.top.findNode("bookLabel")
+end sub
+
+sub onContentChange()
+    content = m.top.itemContent
+    if content = invalid then return
+
+    m.label.text = content.title
+    if content.testament = "NT"
+        m.background.color = "#1e3a5f"
+    else
+        m.background.color = "#1e293b"
+    end if
+end sub
+
+sub onFocusChange()
+    if m.top.focusPercent > 0.5
+        m.background.color = "#3b82f6"
+        m.label.color = "#ffffff"
+    else
+        m.label.color = "#e2e8f0"
+        content = m.top.itemContent
+        if content <> invalid
+            if content.testament = "NT"
+                m.background.color = "#1e3a5f"
+            else
+                m.background.color = "#1e293b"
+            end if
+        end if
+    end if
+end sub

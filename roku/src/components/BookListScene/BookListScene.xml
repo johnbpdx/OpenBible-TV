@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="BookListScene" extends="Group">
+
+    <interface>
+        <field id="selectedBook" type="string" alwaysNotify="true" />
+        <field id="closeScene" type="boolean" alwaysNotify="true" />
+    </interface>
+
+    <children>
+
+        <!-- Background -->
+        <Rectangle
+            id="background"
+            width="1920"
+            height="1080"
+            color="#0f172a" />
+
+        <!-- Header -->
+        <Rectangle
+            id="header"
+            width="1920"
+            height="110"
+            color="#1e2937" />
+
+        <Label
+            id="title"
+            text="Select a Book"
+            font="font:LargeBoldSystemFont"
+            horizAlign="center"
+            vertAlign="center"
+            width="1920"
+            height="110"
+            color="#e2e8f0" />
+
+        <!-- Updates dynamically to show OT or NT as user scrolls -->
+        <Label
+            id="testamentLabel"
+            text="OLD TESTAMENT"
+            font="font:SmallBoldSystemFont"
+            horizAlign="left"
+            vertAlign="center"
+            translation="[120, 120]"
+            width="400"
+            height="40"
+            color="#94a3b8" />
+
+        <!-- Single scrollable grid: all 66 books (11 rows total, 8 visible) -->
+        <MarkupGrid
+            id="bookGrid"
+            translation="[120, 170]"
+            itemComponentName="BookItem"
+            numColumns="6"
+            numRows="8"
+            itemSize="[270, 80]"
+            itemSpacing="[20, 15]"
+            focusable="true"
+            drawFocusFeedback="false" />
+
+    </children>
+
+</component>

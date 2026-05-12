@@ -1,11 +1,13 @@
 {
-    "rootDir": ".",
-    "files": [
-        "source/**/*.bs",
-        "components/**/*.bs",
-        "components/**/*.xml"
-    ],
-    "autoImportComponentScript": true,
-    "createPackage": false,
-    "plugins": []
+  "rootDir": "src",
+  "outDir": "../out",
+  "files": [
+    "manifest",
+    "source/**/*",
+    "components/**/*",
+    "images/**/*",
+    "locale/**/*"
+  ],
+  "autoImportComponentScript": true,
+  "createPackage": true
 }

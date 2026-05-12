@@ -1,3 +1,40 @@
 sub init()
     print "HomeScene initialized"
+    m.bookListScene = invalid
+end sub
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    if not press then return false
+
+    if key = "OK" or key = "play"
+        showBookList()
+        return true
+    end if
+
+    return false
+end function
+
+sub showBookList()
+    if m.bookListScene <> invalid then return
+
+    m.bookListScene = m.top.createChild("BookListScene")
+    m.bookListScene.observeField("closeScene", "onBookListClose")
+    m.bookListScene.observeField("selectedBook", "onBookSelected")
+    m.bookListScene.setFocus(true)
+end sub
+
+sub onBookListClose()
+    if m.bookListScene = invalid then return
+    m.top.removeChild(m.bookListScene)
+    m.bookListScene = invalid
+    m.top.setFocus(true)
+end sub
+
+sub onBookSelected()
+    if m.bookListScene = invalid then return
+    book = m.bookListScene.selectedBook
+    if book <> "" and book <> invalid
+        print "Navigating to chapters for: " + book
+        ' TODO: create and show ChapterListScene
+    end if
 end sub

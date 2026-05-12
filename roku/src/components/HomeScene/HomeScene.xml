@@ -1,32 +1,27 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="HomeScene" extends="Scene">
-    <script type="text/brightscript" uri="pkg:/source/HomeScene.bs" />
-
     <children>
         <Rectangle
-            id="background"
             width="1920"
             height="1080"
-            color="#1a1a1a" />
+            color="#0f172a" />
 
         <Label
-            id="title"
             text="OpenBible TV"
             font="font:LargeBoldSystemFont"
             horizAlign="center"
             vertAlign="center"
             width="1920"
-            height="200"
-            translation="[0,300]" />
-        
+            height="1080"
+            color="#ffffff" />
+
         <Label
-            id="subtitle"
-            text="Press OK to begin"
-            font="font:MediumSystemFont"
+            text="Press OK to browse the Bible"
+            font="font:SmallBoldSystemFont"
             horizAlign="center"
-            vertAlign="center"
+            translation="[0, 620]"
             width="1920"
-            height="100"
-            translation="[0,500]" />
+            height="60"
+            color="#94a3b8" />
     </children>
 </component>
