@@ -81,6 +81,7 @@ sub openStudyPanel()
 
     m.studyPanel = m.top.createChild("StudyPanel")
     m.studyPanel.bookName = m.top.bookName
+    m.studyPanel.bookAbbrev = m.top.bookAbbrev
     m.studyPanel.chapterNumber = m.top.chapterNumber
     m.studyPanel.verseNumber = child.title
     m.studyPanel.verseText = child.description

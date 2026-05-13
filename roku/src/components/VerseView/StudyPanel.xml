@@ -4,6 +4,7 @@
     <interface>
         <field id="closePanel" type="boolean" alwaysNotify="true" />
         <field id="bookName" type="string" />
+        <field id="bookAbbrev" type="string" value="" />
         <field id="chapterNumber" type="integer" />
         <field id="verseNumber" type="string" />
         <field id="verseText" type="string" onChange="onVerseSet" />
