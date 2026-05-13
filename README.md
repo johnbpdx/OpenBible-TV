@@ -135,7 +135,7 @@ OpenBible-TV/
 
 ---
 
-## � Installing the Beta App on Your Roku
+## 📺 Installing the Beta App on Your Roku
 
 If someone has shared a beta channel code with you, here's how to install it:
 
@@ -148,7 +148,7 @@ If someone has shared a beta channel code with you, here's how to install it:
 
 ---
 
-## �🗺️ Roadmap
+## 🗺️ Roadmap
 
 | Status | Feature |
 |--------|---------|
@@ -170,6 +170,22 @@ If someone has shared a beta channel code with you, here's how to install it:
 
 ---
 
+## 🛠️ Issues / Planned Work
+
+Track current work and feature requests in the GitHub issue tracker:  
+**https://github.com/johnbpdx/OpenBible-TV/issues**
+
+Primary planned items:
+
+- Matthew Henry commentary data
+- Roku Channel Store static analysis / release readiness
+- AI-generated discussion questions
+- Trivia game mode
+- Kids mode
+- Multiple translations
+
+---
+
 ## 🤝 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. All contributions welcome — Bible data, UI improvements, platform ports, and beyond.
@@ -179,15 +195,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. All contributions welcome
 ## 📄 License
 
 MIT — see [LICENSE](LICENSE). Bible translations used are in the public domain.
-
-- [VS Code](https://code.visualstudio.com/) + [BrighterScript extension](https://marketplace.visualstudio.com/items?itemName=RokuCommunity.brightscript)
-- Roku IP address and developer password
-
-### Setup
-
-```bash
-git clone https://github.com/johnbpdx/OpenBible-TV.git
-cd OpenBible-TV
-
-# Install tools (optional but recommended)
-npm install -g @rokucommunity/bs
