@@ -12,11 +12,10 @@ sub init()
 
     m.bookGrid.observeField("itemFocused", "onItemFocused")
     m.bookGrid.setFocus(true)
-    m.top.observeField("focus", "onFocusChange")
 end sub
 
-sub onFocusChange()
-    if m.top.focus and m.bookGrid <> invalid
+sub onGiveFocus()
+    if m.bookGrid <> invalid
         m.bookGrid.setFocus(true)
     end if
 end sub

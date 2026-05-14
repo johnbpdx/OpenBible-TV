@@ -6,6 +6,7 @@
         <field id="closeScene" type="boolean" alwaysNotify="true" />
         <field id="bookName" type="string" />
         <field id="bookAbbrev" type="string" onChange="onBookSet" />
+        <field id="giveFocus" type="boolean" alwaysNotify="true" onChange="onGiveFocus" />
     </interface>
 
     <children>

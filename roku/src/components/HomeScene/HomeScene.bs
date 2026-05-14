@@ -57,6 +57,7 @@ sub onChapterListClose()
     m.chapterListScene = invalid
     if m.bookListScene <> invalid
         m.bookListScene.setFocus(true)
+        m.bookListScene.giveFocus = true
     else
         m.top.setFocus(true)
     end if
@@ -88,6 +89,7 @@ sub onVerseViewClose()
     m.verseView = invalid
     if m.chapterListScene <> invalid
         m.chapterListScene.setFocus(true)
+        m.chapterListScene.giveFocus = true
     else
         m.top.setFocus(true)
     end if
