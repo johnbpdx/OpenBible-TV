@@ -3,15 +3,18 @@ function Main(args as object) as void
     port = CreateObject("roMessagePort")
     screen.setMessagePort(port)
 
-    ' Memory monitoring — required for Roku certification
-    appMemoryMonitor = CreateObject("roAppMemoryMonitor")
-    appMemoryMonitor.setMessagePort(port)
-    appMemoryMonitor.EnableLowGeneralMemoryLevel(20)
-
-    ' Create scene
+    ' Create scene first — always runs even if memory monitor below fails
     scene = screen.CreateScene("HomeScene")
     screen.show()
     scene.setFocus(true)
+
+    ' Memory monitoring — required for Roku certification
+    ' Null-checked in case the device OS version does not support roAppMemoryMonitor
+    appMemoryMonitor = CreateObject("roAppMemoryMonitor")
+    if appMemoryMonitor <> invalid
+        appMemoryMonitor.setMessagePort(port)
+        appMemoryMonitor.EnableLowGeneralMemoryLevel(20)
+    end if
 
     print "=== OpenBible-TV Launched ==="
 
