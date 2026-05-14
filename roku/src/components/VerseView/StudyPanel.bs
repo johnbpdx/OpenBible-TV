@@ -1,6 +1,6 @@
 ' *****************************************************************************
 ' * StudyPanel.bs
-' * Verse study overlay — shows selected verse + Matthew Henry commentary
+' * Verse study overlay - shows selected verse, scrollable commentary, questions
 ' *****************************************************************************
 
 sub init()
@@ -8,6 +8,12 @@ sub init()
     m.referenceLabel = m.top.findNode("referenceLabel")
     m.verseLabel = m.top.findNode("verseLabel")
     m.commentaryText = m.top.findNode("commentaryText")
+    m.scrollHint = m.top.findNode("scrollHint")
+    m.questionLabel1 = m.top.findNode("questionLabel1")
+    m.questionLabel2 = m.top.findNode("questionLabel2")
+    m.questionLabel3 = m.top.findNode("questionLabel3")
+    m.scrollY = 0
+    m.commentaryMaxScroll = 0
 end sub
 
 sub onVerseSet()
@@ -19,6 +25,10 @@ sub onVerseSet()
 
     m.referenceLabel.text = book + " " + stri(chapter).trim() + ":" + verse
     m.verseLabel.text = chr(8220) + text + chr(8221)
+
+    ' Reset scroll position on new verse
+    m.scrollY = 0
+    m.commentaryText.translation = [0, 0]
 
     ' Load Matthew Henry Concise Commentary from bundled JSON
     commentary = ""
@@ -36,18 +46,59 @@ sub onVerseSet()
 
     if commentary = "" or commentary = invalid
         m.commentaryText.text = "Commentary not available for this passage."
+        m.commentaryMaxScroll = 0
+        m.scrollHint.text = ""
     else
         m.commentaryText.text = commentary
+        ' Estimate rendered height: ~85 chars/line at 1520px SmallSystemFont, 26px/line
+        estimatedLines = int(len(commentary) / 85) + 2
+        totalHeight = estimatedLines * 26
+        m.commentaryMaxScroll = totalHeight - 300
+        if m.commentaryMaxScroll < 0 then m.commentaryMaxScroll = 0
+        if m.commentaryMaxScroll > 0
+            m.scrollHint.text = chr(8593) + chr(8595) + " Up/Dn to scroll"
+        else
+            m.scrollHint.text = ""
+        end if
+    end if
+
+    ' Load AI discussion questions from bundled JSON
+    m.questionLabel1.text = ""
+    m.questionLabel2.text = ""
+    m.questionLabel3.text = ""
+    if abbrev <> "" and abbrev <> invalid
+        qPath = "pkg:/data/questions/" + abbrev + ".json"
+        qStr = ReadAsciiFile(qPath)
+        if qStr <> ""
+            qData = ParseJson(qStr)
+            chapterStr = stri(chapter).trim()
+            if qData <> invalid and qData.DoesExist(chapterStr)
+                questions = qData[chapterStr]
+                if questions <> invalid and questions.Count() >= 3
+                    m.questionLabel1.text = chr(8226) + " " + questions[0]
+                    m.questionLabel2.text = chr(8226) + " " + questions[1]
+                    m.questionLabel3.text = chr(8226) + " " + questions[2]
+                end if
+            end if
+        end if
     end if
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
-
-    if key = "back"
+    if key = "up"
+        m.scrollY = m.scrollY - 26
+        if m.scrollY < 0 then m.scrollY = 0
+        m.commentaryText.translation = [0, -m.scrollY]
+        return true
+    else if key = "down"
+        m.scrollY = m.scrollY + 26
+        if m.scrollY > m.commentaryMaxScroll then m.scrollY = m.commentaryMaxScroll
+        m.commentaryText.translation = [0, -m.scrollY]
+        return true
+    else if key = "back"
         m.top.closePanel = true
         return true
     end if
-
     return false
 end function
