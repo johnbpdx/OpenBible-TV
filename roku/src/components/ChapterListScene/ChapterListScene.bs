@@ -7,6 +7,13 @@ sub init()
     print "ChapterListScene initialized"
     m.bookTitleLabel = m.top.findNode("bookTitle")
     m.chapterGrid = m.top.findNode("chapterGrid")
+    m.top.observeField("focus", "onFocusChange")
+end sub
+
+sub onFocusChange()
+    if m.top.focus and m.chapterGrid <> invalid
+        m.chapterGrid.setFocus(true)
+    end if
 end sub
 
 sub onBookSet()
