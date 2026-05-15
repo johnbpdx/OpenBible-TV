@@ -51,9 +51,9 @@ sub onVerseSet()
     else
         m.commentaryText.text = commentary
         ' Estimate rendered height: ~85 chars/line at 1520px SmallSystemFont, 26px/line
-        estimatedLines = int(len(commentary) / 85) + 2
-        totalHeight = estimatedLines * 26
-        m.commentaryMaxScroll = totalHeight - 300
+        estimatedLines = int(len(commentary) / 70) + 2
+        totalHeight = estimatedLines * 42
+        m.commentaryMaxScroll = totalHeight - 294
         if m.commentaryMaxScroll < 0 then m.commentaryMaxScroll = 0
         if m.commentaryMaxScroll > 0
             m.scrollHint.text = chr(8593) + chr(8595) + " Up/Dn to scroll"
@@ -87,12 +87,12 @@ end sub
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
     if key = "up"
-        m.scrollY = m.scrollY - 26
+        m.scrollY = m.scrollY - 42
         if m.scrollY < 0 then m.scrollY = 0
         m.commentaryText.translation = [0, -m.scrollY]
         return true
     else if key = "down"
-        m.scrollY = m.scrollY + 26
+        m.scrollY = m.scrollY + 42
         if m.scrollY > m.commentaryMaxScroll then m.scrollY = m.commentaryMaxScroll
         m.commentaryText.translation = [0, -m.scrollY]
         return true

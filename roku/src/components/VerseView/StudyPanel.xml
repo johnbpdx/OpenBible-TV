@@ -86,8 +86,8 @@
             horizAlign="right"
             text="" />
 
-        <!-- Commentary clip window: 300px tall, scrolls by translating inner label -->
-        <Group id="commentaryClip" translation="[200, 480]" clippingRect="[0, 0, 1520, 300]">
+        <!-- Commentary clip window: 294px tall (7 lines × 42px), scrolls by translating inner label -->
+        <Group id="commentaryClip" translation="[200, 480]" clippingRect="[0, 0, 1520, 294]">
             <Label
                 id="commentaryText"
                 translation="[0, 0]"
