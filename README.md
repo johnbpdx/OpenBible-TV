@@ -64,12 +64,22 @@ ROKU_PASSWORD=yourpassword  # Set when enabling Developer Mode
 
 ### Build & Deploy
 
+Windows (PowerShell):
+
 ```powershell
 cd roku
 .\deploy.ps1
 ```
 
-This builds the BrighterScript source and sideloads the `.zip` directly to your Roku in one step.
+Linux/macOS (Bash):
+
+```bash
+cd roku
+chmod +x deploy.sh
+./deploy.sh
+```
+
+Both scripts build the BrighterScript source and sideload the `.zip` directly to your Roku in one step.
 
 ### Download Bible Data
 
@@ -124,7 +134,8 @@ OpenBible-TV/
 │   │           ├── ex.json               # Exodus
 │   │           └── ...                   # All 66 books
 │   ├── bsconfig.json                     # BrighterScript build config
-│   └── deploy.ps1                        # One-step build + deploy script
+│   ├── deploy.ps1                        # One-step build + deploy script (Windows)
+│   └── deploy.sh                         # One-step build + deploy script (Linux/macOS)
 ├── data/
 │   └── download-web-bible.ps1            # Script to regenerate Bible JSON from source
 ├── backend/                              # Future: AI discussion questions API

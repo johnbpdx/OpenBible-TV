@@ -1,20 +1,83 @@
 sub init()
     print "HomeScene initialized"
-    m.bookListScene = invalid
+    m.bookListScene    = invalid
     m.chapterListScene = invalid
-    m.verseView = invalid
+    m.verseView        = invalid
+    m.triviaScene      = invalid
+    m.triviaMode       = false
+    m.selectedMenu     = 0  ' 0 = Browse Bible, 1 = Bible Trivia
+    m.homeHint         = m.top.findNode("homeHint")
+    m.inputRoot        = m.top.findNode("inputRoot")
+    m.menuHighlight    = m.top.findNode("menuHighlight")
+    m.menuItem1        = m.top.findNode("menuItem1")
+    m.menuItem2        = m.top.findNode("menuItem2")
+
+    ' Keep focus at scene level and handle keys manually.
+    m.top.setFocus(true)
+    if m.inputRoot <> invalid
+        m.inputRoot.setFocus(true)
+    end if
+    updateMenuDisplay()
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
 
-    if key = "OK" or key = "play"
-        showBookList()
+    k = lcase(key)
+
+    if k = "up" or k = "down" or k = "left" or k = "right"
+        if (k = "up" or k = "left") and m.selectedMenu > 0
+            m.selectedMenu = m.selectedMenu - 1
+        else if (k = "down" or k = "right") and m.selectedMenu < 1
+            m.selectedMenu = m.selectedMenu + 1
+        end if
+        updateMenuDisplay()
+        return true
+    end if
+
+    if k = "ok" or k = "select" or k = "play"
+        startSelectedMode()
         return true
     end if
 
     return false
 end function
+
+sub updateMenuDisplay()
+    if m.menuHighlight = invalid or m.menuItem1 = invalid or m.menuItem2 = invalid
+        return
+    end if
+
+    if m.selectedMenu = 0
+        m.menuHighlight.translation = [710, 430]
+        m.menuItem1.color = "#ffffff"
+        m.menuItem2.color = "#64748b"
+    else
+        m.menuHighlight.translation = [710, 514]
+        m.menuItem1.color = "#64748b"
+        m.menuItem2.color = "#ffffff"
+    end if
+
+    if m.homeHint <> invalid
+        if m.selectedMenu = 1
+            m.homeHint.text = "Bible Trivia: Book -> Chapter -> Questions"
+        else
+            m.homeHint.text = "Browse Bible: Book -> Chapter -> Verses"
+        end if
+    end if
+end sub
+
+sub startSelectedMode()
+    if m.selectedMenu = 1
+        if m.homeHint <> invalid
+            m.homeHint.text = "Bible Trivia: Book -> Chapter -> Questions"
+        end if
+        m.triviaMode = true
+    else
+        m.triviaMode = false
+    end if
+    showBookList()
+end sub
 
 sub showBookList()
     if m.bookListScene <> invalid then return
@@ -66,10 +129,14 @@ end sub
 sub onChapterSelected()
     if m.chapterListScene = invalid then return
     chapter = m.chapterListScene.selectedChapter
-    book = m.chapterListScene.bookName
-    abbrev = m.chapterListScene.bookAbbrev
+    book    = m.chapterListScene.bookName
+    abbrev  = m.chapterListScene.bookAbbrev
     if chapter > 0
-        showVerseView(book, abbrev, chapter)
+        if m.triviaMode
+            showTriviaScene(book, abbrev, chapter)
+        else
+            showVerseView(book, abbrev, chapter)
+        end if
     end if
 end sub
 
@@ -87,6 +154,28 @@ sub onVerseViewClose()
     if m.verseView = invalid then return
     m.top.removeChild(m.verseView)
     m.verseView = invalid
+    if m.chapterListScene <> invalid
+        m.chapterListScene.setFocus(true)
+        m.chapterListScene.giveFocus = true
+    else
+        m.top.setFocus(true)
+    end if
+end sub
+
+sub showTriviaScene(bookName as string, bookAbbrev as string, chapter as integer)
+    if m.triviaScene <> invalid then return
+    m.triviaScene = m.top.createChild("TriviaScene")
+    m.triviaScene.bookName      = bookName
+    m.triviaScene.bookAbbrev    = bookAbbrev
+    m.triviaScene.chapterNumber = chapter
+    m.triviaScene.observeField("closeScene", "onTriviaClose")
+    m.triviaScene.setFocus(true)
+end sub
+
+sub onTriviaClose()
+    if m.triviaScene = invalid then return
+    m.top.removeChild(m.triviaScene)
+    m.triviaScene = invalid
     if m.chapterListScene <> invalid
         m.chapterListScene.setFocus(true)
         m.chapterListScene.giveFocus = true

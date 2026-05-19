@@ -1,0 +1,202 @@
+' *****************************************************************************
+' * TriviaScene.bs
+' * Bible trivia quiz — shows discussion questions one at a time.
+' * OK reveals the chapter text so the user can find the answer.
+' * States: "question" -> "answer" -> next question -> "complete"
+' *****************************************************************************
+
+sub init()
+    print "TriviaScene initialized"
+    m.headerLabel      = m.top.findNode("headerLabel")
+    m.progressLabel    = m.top.findNode("progressLabel")
+    m.questionText     = m.top.findNode("questionText")
+    m.answerGroup      = m.top.findNode("answerGroup")
+    m.answerText       = m.top.findNode("answerText")
+    m.answerScrollHint = m.top.findNode("answerScrollHint")
+    m.completeGroup    = m.top.findNode("completeGroup")
+    m.completeSubLabel = m.top.findNode("completeSubLabel")
+    m.hintBar          = m.top.findNode("hintBar")
+
+    m.questions       = []
+    m.chapterText     = ""
+    m.currentIndex    = 0
+    m.state           = "question"
+    m.scrollY         = 0
+    m.answerMaxScroll = 0
+
+    m.answerGroup.visible   = false
+    m.completeGroup.visible = false
+end sub
+
+sub onChapterSet()
+    abbrev  = m.top.bookAbbrev
+    chapter = m.top.chapterNumber
+    book    = m.top.bookName
+
+    if abbrev = "" or abbrev = invalid then return
+    if chapter = 0 or chapter = invalid then return
+
+    m.headerLabel.text = ucase(book) + " " + stri(chapter).trim() + "  —  BIBLE TRIVIA"
+
+    ' Load discussion questions for this chapter
+    m.questions = []
+    qPath = "pkg:/data/questions/" + abbrev + ".json"
+    qStr  = ReadAsciiFile(qPath)
+    if qStr <> ""
+        qData      = ParseJson(qStr)
+        chapterStr = stri(chapter).trim()
+        if qData <> invalid and qData.DoesExist(chapterStr)
+            m.questions = qData[chapterStr]
+        end if
+    end if
+
+    ' Load and format chapter text (verse-by-verse)
+    m.chapterText = ""
+    bPath = "pkg:/data/books/" + abbrev + ".json"
+    bStr  = ReadAsciiFile(bPath)
+    if bStr <> ""
+        bData = ParseJson(bStr)
+        if bData <> invalid and bData.DoesExist("chapters")
+            for each ch in bData.chapters
+                if ch.chapter = chapter
+                    for each v in ch.verses
+                        verseNum  = stri(v.verse).trim()
+                        if m.chapterText <> ""
+                            m.chapterText = m.chapterText + chr(10)
+                        end if
+                        m.chapterText = m.chapterText + "[" + verseNum + "]  " + v.text
+                    end for
+                    exit for
+                end if
+            end for
+        end if
+    end if
+
+    ' Reset to first question
+    m.currentIndex = 0
+    m.state        = "question"
+    m.answerGroup.visible   = false
+    m.completeGroup.visible = false
+
+    if m.questions.Count() = 0
+        m.questionText.text  = "No questions available for this chapter."
+        m.progressLabel.text = ""
+        m.hintBar.text       = "Back: Return"
+    else
+        showCurrentQuestion()
+    end if
+end sub
+
+' ─── Display helpers ──────────────────────────────────────────────────────────
+
+sub showCurrentQuestion()
+    total = m.questions.Count()
+    idx   = m.currentIndex
+
+    m.progressLabel.text    = "Question " + stri(idx + 1).trim() + " of " + stri(total).trim()
+    m.questionText.text     = m.questions[idx]
+    m.answerGroup.visible   = false
+    m.completeGroup.visible = false
+
+    m.scrollY = 0
+    m.state   = "question"
+    m.hintBar.text = "OK: Reveal Answer   |   Back: Exit Quiz"
+end sub
+
+sub showAnswer()
+    m.answerGroup.visible = true
+
+    if m.chapterText = ""
+        m.answerText.text     = "Chapter text not available."
+        m.answerMaxScroll     = 0
+        m.answerScrollHint.text = ""
+    else
+        m.answerText.text = m.chapterText
+        ' Estimate scroll depth conservatively so the last verse can be fully revealed.
+        ' Some chapters wrap more aggressively than a simple chars/line estimate.
+        estimatedLines    = int(len(m.chapterText) / 75) + 8
+        totalHeight       = estimatedLines * 42
+        m.answerMaxScroll = totalHeight - 490 + 24
+        if m.answerMaxScroll < 0 then m.answerMaxScroll = 0
+        if m.answerMaxScroll > 0
+            m.answerScrollHint.text = "Up/Dn to scroll"
+        else
+            m.answerScrollHint.text = ""
+        end if
+    end if
+
+    m.scrollY = 0
+    m.answerText.translation = [0, 0]
+    m.state = "answer"
+
+    if m.currentIndex = m.questions.Count() - 1
+        m.hintBar.text = "Up/Dn: Scroll   |   OK: Finish Quiz   |   Back: Back to Question"
+    else
+        m.hintBar.text = "Up/Dn: Scroll   |   OK: Next Question   |   Back: Back to Question"
+    end if
+end sub
+
+sub showComplete()
+    m.state = "complete"
+    m.questionText.text     = ""
+    m.progressLabel.text    = ""
+    m.answerGroup.visible   = false
+    m.completeGroup.visible = true
+
+    book    = m.top.bookName
+    chapter = m.top.chapterNumber
+    total   = m.questions.Count()
+    m.completeSubLabel.text = "You worked through all " + stri(total).trim() + " questions in " + book + " " + stri(chapter).trim()
+    m.hintBar.text = "Back: Return to Chapter Selection"
+end sub
+
+' ─── Input ────────────────────────────────────────────────────────────────────
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    if not press then return false
+
+    if m.state = "question"
+        if key = "OK"
+            showAnswer()
+            return true
+        else if key = "back"
+            m.top.closeScene = true
+            return true
+        end if
+
+    else if m.state = "answer"
+        if key = "up"
+            m.scrollY = m.scrollY - 36
+            if m.scrollY < 0 then m.scrollY = 0
+            m.answerText.translation = [0, -m.scrollY]
+            return true
+        else if key = "down"
+            m.scrollY = m.scrollY + 36
+            if m.scrollY > m.answerMaxScroll then m.scrollY = m.answerMaxScroll
+            m.answerText.translation = [0, -m.scrollY]
+            return true
+        else if key = "OK"
+            m.currentIndex = m.currentIndex + 1
+            if m.currentIndex >= m.questions.Count()
+                showComplete()
+            else
+                showCurrentQuestion()
+            end if
+            return true
+        else if key = "back"
+            ' Step back to question view (re-read without revealing answer)
+            m.answerGroup.visible = false
+            m.state    = "question"
+            m.hintBar.text = "OK: Reveal Answer   |   Back: Exit Quiz"
+            return true
+        end if
+
+    else if m.state = "complete"
+        if key = "back"
+            m.top.closeScene = true
+            return true
+        end if
+    end if
+
+    return false
+end function

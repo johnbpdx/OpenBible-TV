@@ -1,27 +1,80 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="HomeScene" extends="Scene">
     <children>
+        <!-- Explicit focus target for remote input -->
+        <Group
+            id="inputRoot"
+            focusable="true" />
+
         <Rectangle
             width="1920"
             height="1080"
             color="#0f172a" />
 
+        <!-- Title -->
         <Label
             text="OpenBible TV"
             font="font:LargeBoldSystemFont"
             horizAlign="center"
             vertAlign="center"
+            translation="[0, 160]"
             width="1920"
-            height="1080"
+            height="180"
             color="#ffffff" />
 
+        <!-- Tagline -->
         <Label
-            text="Press OK to browse the Bible"
-            font="font:SmallBoldSystemFont"
+            text="Select an experience"
+            font="font:SmallSystemFont"
             horizAlign="center"
-            translation="[0, 620]"
+            translation="[0, 360]"
             width="1920"
-            height="60"
-            color="#94a3b8" />
+            height="44"
+            color="#64748b" />
+
+        <!-- Menu selection highlight (moves programmatically) -->
+        <Rectangle
+            id="menuHighlight"
+            translation="[710, 430]"
+            width="500"
+            height="76"
+            color="#1e3a5f" />
+
+        <!-- Menu item 1: Browse Bible -->
+        <Label
+            id="menuItem1"
+            translation="[710, 430]"
+            width="500"
+            height="76"
+            font="font:MediumBoldSystemFont"
+            horizAlign="center"
+            vertAlign="center"
+            color="#ffffff"
+            text="Browse Bible" />
+
+        <!-- Menu item 2: Bible Trivia -->
+        <Label
+            id="menuItem2"
+            translation="[710, 514]"
+            width="500"
+            height="76"
+            font="font:MediumBoldSystemFont"
+            horizAlign="center"
+            vertAlign="center"
+            color="#64748b"
+            text="Bible Trivia" />
+
+        <!-- Hint bar -->
+        <Label
+            id="homeHint"
+            translation="[0, 1020]"
+            width="1920"
+            height="40"
+            horizAlign="center"
+            vertAlign="center"
+            font="font:SmallSystemFont"
+            color="#334155"
+            text="Up/Dn: Select   OK: Start" />
+
     </children>
 </component>
