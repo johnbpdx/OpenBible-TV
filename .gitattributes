@@ -1,0 +1,21 @@
+# Normalize line endings to LF in the repository, checkout as-is on all platforms
+* text=auto eol=lf
+
+# Explicitly handle common text file types
+*.bs text eol=lf
+*.xml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.py text eol=lf
+*.ps1 text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Binary files - no line ending conversion
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
